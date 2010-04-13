@@ -8,8 +8,9 @@ namespace IdempotentConsumer.Core
 		private readonly TransactionScope scope;
 		private readonly IDispatchedMessageUnitOfWork unitOfWork;
 
-		public TransactionScopeMessageModule(IDispatchedMessageUnitOfWork unitOfWork)
+		public TransactionScopeMessageModule(TransactionScope scope, IDispatchedMessageUnitOfWork unitOfWork)
 		{
+			this.scope = scope;
 			this.unitOfWork = unitOfWork;
 		}
 

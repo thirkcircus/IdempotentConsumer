@@ -72,7 +72,7 @@ namespace IdempotentConsumer.Core
 		}
 		public void Publish<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.Publish(CreateInstance(messageConstructor));
+			this.Publish(this.CreateInstance(messageConstructor));
 		}
 
 		public void Subscribe(Type messageType)
@@ -108,7 +108,7 @@ namespace IdempotentConsumer.Core
 		}
 		public void SendLocal<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.SendLocal(CreateInstance(messageConstructor));
+			this.SendLocal(this.CreateInstance(messageConstructor));
 		}
 
 		public ICallback Send(params IMessage[] messages)
@@ -118,7 +118,7 @@ namespace IdempotentConsumer.Core
 		}
 		public ICallback Send<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			return this.Send(CreateInstance(messageConstructor));
+			return this.Send(this.CreateInstance(messageConstructor));
 		}
 		public ICallback Send(string destination, params IMessage[] messages)
 		{
@@ -144,7 +144,7 @@ namespace IdempotentConsumer.Core
 		}
 		public void Reply<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.Reply(CreateInstance(messageConstructor));
+			this.Reply(this.CreateInstance(messageConstructor));
 		}
 
 		public void Return(int errorCode)
