@@ -7,6 +7,8 @@ namespace IdempotentConsumer.Core
 	public class DispatchBus : ICaptureDispatchedMessages
 	{
 		private readonly IBus bus;
+		private Guid aggregateId;
+		private Guid messageId;
 
 		public DispatchBus(IBus bus)
 		{
@@ -20,6 +22,25 @@ namespace IdempotentConsumer.Core
 		public IMessageContext CurrentMessageContext
 		{
 			get { return this.bus.CurrentMessageContext; }
+		}
+
+		public void AssignMessageIdentifiers(Guid currentAggregateId, Guid currentMessageId)
+		{
+			this.aggregateId = currentAggregateId;
+			this.messageId = currentMessageId;
+		}
+		private IEnumerable<DispatchedMessage> Build(params IMessage[] messages)
+		{
+			foreach (var message in messages)
+			{
+				yield return new DispatchedMessage
+				{
+					SourceMessageId = this.messageId,
+					AggregateId = this.aggregateId,
+					Body = message,
+					Created = DateTime.UtcNow
+				};
+			}
 		}
 
 		public T CreateInstance<T>() where T : IMessage

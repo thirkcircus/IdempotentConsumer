@@ -7,7 +7,7 @@ namespace IdempotentStore.NHibernate
 	using global::NHibernate.Linq;
 	using IdempotentConsumer;
 
-	public class NHibernateMessageStore : ILoadDispatchedMessages
+	public class NHibernateMessageStore : ILoadDispatchedMessages, IStoreDispatchedMessages
 	{
 		private readonly ISession session;
 
@@ -21,6 +21,12 @@ namespace IdempotentStore.NHibernate
 			return from message in this.session.Linq<DispatchedMessage>()
 			       where message.AggregateId == aggregateId && message.SourceMessageId == messageId
 			       select message;
+		}
+
+		public void Store(ICollection<DispatchedMessage> messages)
+		{
+			foreach (var message in messages)
+				this.session.Save(message);
 		}
 	}
 }
