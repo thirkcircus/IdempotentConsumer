@@ -2,11 +2,12 @@ namespace IdempotentStore.NHibernate
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using global::NHibernate;
-	using global::NHibernate.Criterion;
+	using global::NHibernate.Linq;
 	using IdempotentConsumer;
 
-	public class NHibernateMessageStore : ILoadDispatchedMessages
+	public class NHibernateMessageStore : IStoreDispatchedMessages
 	{
 		private readonly ISession session;
 
@@ -14,14 +15,12 @@ namespace IdempotentStore.NHibernate
 		{
 			this.session = session;
 		}
+
 		public IEnumerable<DispatchedMessage> Load(Guid aggregateId, Guid messageId)
 		{
-			var criteria = this.session.CreateCriteria(typeof(DispatchedMessage));
-			criteria.Add(Restrictions.Eq("AggregateId", aggregateId));
-			criteria.Add(Restrictions.Eq("SourceMessageId", messageId));
-			var messages = criteria.List();
-			foreach (var message in messages)
-				yield return message as DispatchedMessage;
+			return from message in this.session.Linq<DispatchedMessage>()
+			       where message.AggregateId == aggregateId && message.SourceMessageId == messageId
+			       select message;
 		}
 	}
 }

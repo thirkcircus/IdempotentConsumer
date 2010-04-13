@@ -6,7 +6,7 @@ namespace IdempotentStore.LinqToSql
 	using System.Linq;
 	using IdempotentConsumer;
 
-	public class DataContextMessageStore : ILoadDispatchedMessages
+	public class DataContextMessageStore : IStoreDispatchedMessages
 	{
 		private readonly DataContext context;
 
@@ -17,8 +17,7 @@ namespace IdempotentStore.LinqToSql
 
 		public IEnumerable<DispatchedMessage> Load(Guid aggregateId, Guid messageId)
 		{
-			var table = this.context.GetTable<DispatchedMessage>();
-			return from message in table
+			return from message in this.context.GetTable<DispatchedMessage>()
 			       where message.AggregateId == aggregateId && message.SourceMessageId == messageId
 			       select message;
 		}

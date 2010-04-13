@@ -6,18 +6,18 @@ namespace IdempotentConsumer.Core
 
 	public class DuplicateMessageFilter : IFilterDuplicateMessages
 	{
-		private readonly ILoadDispatchedMessages repository;
+		private readonly IStoreDispatchedMessages messageStore;
 		private readonly IDispatchMessages dispatcher;
 
-		public DuplicateMessageFilter(ILoadDispatchedMessages repository, IDispatchMessages dispatcher)
+		public DuplicateMessageFilter(IStoreDispatchedMessages repository, IDispatchMessages dispatcher)
 		{
-			this.repository = repository;
+			this.messageStore = repository;
 			this.dispatcher = dispatcher;
 		}
 
 		public void Filter(Action handleMessage, Guid aggregateId, Guid messageId)
 		{
-			var messages = this.repository.Load(aggregateId, messageId);
+			var messages = this.messageStore.Load(aggregateId, messageId);
 			if (MessageHasNeverBeenHandled(messages))
 				handleMessage();
 			else
