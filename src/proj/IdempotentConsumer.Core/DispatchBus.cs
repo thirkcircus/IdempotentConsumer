@@ -23,7 +23,7 @@ namespace IdempotentConsumer.Core
 			this.aggregateId = currentAggregateId;
 			this.messageId = currentMessageId;
 		}
-		private IEnumerable<DispatchedMessage> Build(params IMessage[] messages)
+		private IEnumerable<DispatchedMessage> Build(DispatchMethod method, params IMessage[] messages)
 		{
 			foreach (var message in messages)
 			{
@@ -31,15 +31,16 @@ namespace IdempotentConsumer.Core
 				{
 					SourceMessageId = this.messageId,
 					AggregateId = this.aggregateId,
+					Method = method,
 					Body = message,
 					Created = DateTime.UtcNow // TODO
 				};
 			}
 		}
 
-		private void RegisterMessages(params IMessage[] messages)
+		private void RegisterMessages(DispatchMethod method, params IMessage[] messages)
 		{
-			foreach (var message in this.Build(messages))
+			foreach (var message in this.Build(method, messages))
 				this.unitOfWork.RegisterNew(message);
 		}
 
@@ -67,7 +68,7 @@ namespace IdempotentConsumer.Core
 
 		public void Publish<T>(params T[] messages) where T : IMessage
 		{
-			this.RegisterMessages(messages as IMessage[]);
+			this.RegisterMessages(DispatchMethod.Publish, messages as IMessage[]);
 			this.bus.Publish(messages);
 		}
 		public void Publish<T>(Action<T> messageConstructor) where T : IMessage
@@ -103,7 +104,7 @@ namespace IdempotentConsumer.Core
 
 		public void SendLocal(params IMessage[] messages)
 		{
-			this.RegisterMessages(messages);
+			this.RegisterMessages(DispatchMethod.SendLocal, messages);
 			this.bus.SendLocal(messages);
 		}
 		public void SendLocal<T>(Action<T> messageConstructor) where T : IMessage
@@ -113,7 +114,7 @@ namespace IdempotentConsumer.Core
 
 		public ICallback Send(params IMessage[] messages)
 		{
-			this.RegisterMessages(messages);
+			this.RegisterMessages(DispatchMethod.Send, messages);
 			return this.bus.Send(messages);
 		}
 		public ICallback Send<T>(Action<T> messageConstructor) where T : IMessage
@@ -139,7 +140,7 @@ namespace IdempotentConsumer.Core
 
 		public void Reply(params IMessage[] messages)
 		{
-			this.RegisterMessages(messages);
+			this.RegisterMessages(DispatchMethod.Reply, messages);
 			this.bus.Reply(messages);
 		}
 		public void Reply<T>(Action<T> messageConstructor) where T : IMessage
@@ -149,7 +150,7 @@ namespace IdempotentConsumer.Core
 
 		public void Return(int errorCode)
 		{
-			this.RegisterMessages(new ReturnCodeMessage(errorCode));
+			this.RegisterMessages(DispatchMethod.Return, new ReturnCodeMessage(errorCode));
 			this.bus.Return(errorCode);
 		}
 
