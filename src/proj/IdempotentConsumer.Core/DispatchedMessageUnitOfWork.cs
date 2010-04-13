@@ -7,8 +7,6 @@ namespace IdempotentConsumer.Core
 		private readonly HashSet<DispatchedMessage> tracked = new HashSet<DispatchedMessage>();
 		private readonly IStoreDispatchedMessages messageStore;
 
-		// if multiple handlers (which had fundamentally different aggregateIds) were ever run in the same
-		// unit of work, the message and group indexes wouldn't reset to zero.
 		private DispatchMethod methodOfPreviousMessage;
 		private int messageIndex;
 		private int groupIndex;

@@ -17,7 +17,7 @@ namespace IdempotentStore.NHibernate
 			this.Map(x => x.Method);
 			this.Map(x => x.AggregateId).Index("IX_DispatchedMessages_AggregateId");
 			this.Map(x => x.Body).CustomType(typeof(byte[]));
-			this.Map(x => x.Created);
+			this.Map(x => x.Created).Index("IX_DispatchedMessages_Expiration");
 		}
 	}
 }
