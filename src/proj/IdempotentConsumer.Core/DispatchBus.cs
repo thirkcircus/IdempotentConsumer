@@ -7,21 +7,15 @@ namespace IdempotentConsumer.Core
 	public class DispatchBus : ICaptureDispatchedMessages
 	{
 		private readonly IBus bus;
+		private readonly IDispatchedMessageUnitOfWork unitOfWork;
+
 		private Guid aggregateId;
 		private Guid messageId;
 
-		public DispatchBus(IBus bus)
+		public DispatchBus(IBus bus, IDispatchedMessageUnitOfWork unitOfWork)
 		{
 			this.bus = bus;
-		}
-
-		public IDictionary<string, string> OutgoingHeaders
-		{
-			get { return this.bus.OutgoingHeaders; }
-		}
-		public IMessageContext CurrentMessageContext
-		{
-			get { return this.bus.CurrentMessageContext; }
+			this.unitOfWork = unitOfWork;
 		}
 
 		public void AssignMessageIdentifiers(Guid currentAggregateId, Guid currentMessageId)
@@ -38,9 +32,24 @@ namespace IdempotentConsumer.Core
 					SourceMessageId = this.messageId,
 					AggregateId = this.aggregateId,
 					Body = message,
-					Created = DateTime.UtcNow
+					Created = DateTime.UtcNow // TODO
 				};
 			}
+		}
+
+		private void RegisterMessages(params IMessage[] messages)
+		{
+			foreach (var message in this.Build(messages))
+				this.unitOfWork.RegisterNew(message);
+		}
+
+		public IDictionary<string, string> OutgoingHeaders
+		{
+			get { return this.bus.OutgoingHeaders; }
+		}
+		public IMessageContext CurrentMessageContext
+		{
+			get { return this.bus.CurrentMessageContext; }
 		}
 
 		public T CreateInstance<T>() where T : IMessage
@@ -58,11 +67,12 @@ namespace IdempotentConsumer.Core
 
 		public void Publish<T>(params T[] messages) where T : IMessage
 		{
+			this.RegisterMessages(messages as IMessage[]);
 			this.bus.Publish(messages);
 		}
 		public void Publish<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.bus.Publish(messageConstructor);
+			this.Publish(CreateInstance(messageConstructor));
 		}
 
 		public void Subscribe(Type messageType)
@@ -93,20 +103,22 @@ namespace IdempotentConsumer.Core
 
 		public void SendLocal(params IMessage[] messages)
 		{
+			this.RegisterMessages(messages);
 			this.bus.SendLocal(messages);
 		}
 		public void SendLocal<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.bus.SendLocal(messageConstructor);
+			this.SendLocal(CreateInstance(messageConstructor));
 		}
 
 		public ICallback Send(params IMessage[] messages)
 		{
+			this.RegisterMessages(messages);
 			return this.bus.Send(messages);
 		}
 		public ICallback Send<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			return this.bus.Send(messageConstructor);
+			return this.Send(CreateInstance(messageConstructor));
 		}
 		public ICallback Send(string destination, params IMessage[] messages)
 		{
@@ -127,15 +139,17 @@ namespace IdempotentConsumer.Core
 
 		public void Reply(params IMessage[] messages)
 		{
+			this.RegisterMessages(messages);
 			this.bus.Reply(messages);
 		}
 		public void Reply<T>(Action<T> messageConstructor) where T : IMessage
 		{
-			this.bus.Reply(messageConstructor);
+			this.Reply(CreateInstance(messageConstructor));
 		}
 
 		public void Return(int errorCode)
 		{
+			this.RegisterMessages(new ReturnCodeMessage(errorCode));
 			this.bus.Return(errorCode);
 		}
 
