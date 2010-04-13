@@ -6,7 +6,7 @@ namespace IdempotentStore.LinqToSql
 	using System.Linq;
 	using IdempotentConsumer;
 
-	public class DataContextMessageStore : IStoreDispatchedMessages
+	public class DataContextMessageStore : ILoadDispatchedMessages
 	{
 		private readonly DataContext context;
 

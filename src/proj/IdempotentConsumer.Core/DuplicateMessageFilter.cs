@@ -1,32 +1,26 @@
 namespace IdempotentConsumer.Core
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 
 	public class DuplicateMessageFilter : IFilterDuplicateMessages
 	{
-		private readonly IStoreDispatchedMessages messageStore;
-		private readonly IDispatchMessages dispatcher;
+		private readonly ILoadDispatchedMessages messageLoad;
+		private readonly IRedispatchMessages dispatcher;
 
-		public DuplicateMessageFilter(IStoreDispatchedMessages repository, IDispatchMessages dispatcher)
+		public DuplicateMessageFilter(ILoadDispatchedMessages repository, IRedispatchMessages dispatcher)
 		{
-			this.messageStore = repository;
+			this.messageLoad = repository;
 			this.dispatcher = dispatcher;
 		}
 
 		public void Filter(Action handleMessage, Guid aggregateId, Guid messageId)
 		{
-			var messages = this.messageStore.Load(aggregateId, messageId);
-			if (MessageHasNeverBeenHandled(messages))
-				handleMessage();
+			var previouslyDispatched = this.messageLoad.Load(aggregateId, messageId);
+			if (previouslyDispatched.Any())
+				this.dispatcher.Redispatch(previouslyDispatched);
 			else
-				this.dispatcher.Dispatch(messages);
-		}
-
-		private static bool MessageHasNeverBeenHandled(IEnumerable<DispatchedMessage> previouslyPublished)
-		{
-			return !previouslyPublished.Any();
+				handleMessage();
 		}
 	}
 }

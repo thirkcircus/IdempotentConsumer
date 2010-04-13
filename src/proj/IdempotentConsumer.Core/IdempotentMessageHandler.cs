@@ -6,11 +6,11 @@ namespace IdempotentConsumer.Core
 	public abstract class IdempotentMessageHandler<T> : IHandleMessagesOnce<T>
 		where T : IMessage
 	{
-		public IFilterDuplicateMessages DuplicateHandler { get; set; }
+		public IFilterDuplicateMessages DuplicateFilter { get; set; }
 
 		public void Handle(T message)
 		{
-			this.DuplicateHandler.Filter(
+			this.DuplicateFilter.Filter(
 				() => this.HandleNewMessage(message),
 				this.GetAggregateId(message),
 				this.GetMessageId(message));

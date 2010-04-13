@@ -7,7 +7,7 @@ namespace IdempotentStore.NHibernate
 	using global::NHibernate.Linq;
 	using IdempotentConsumer;
 
-	public class NHibernateMessageStore : IStoreDispatchedMessages
+	public class NHibernateMessageStore : ILoadDispatchedMessages
 	{
 		private readonly ISession session;
 

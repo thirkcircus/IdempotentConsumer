@@ -46,7 +46,7 @@
     <Compile Include="DispatchBus.cs" />
     <Compile Include="DuplicateMessageFilter.cs" />
     <Compile Include="IdempotentMessageHandler.cs" />
-    <Compile Include="MessageDispatcher.cs" />
+    <Compile Include="MessageRedispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

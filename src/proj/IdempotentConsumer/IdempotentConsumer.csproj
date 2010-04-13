@@ -44,10 +44,10 @@
     </Compile>
     <Compile Include="DispatchMethod.cs" />
     <Compile Include="ICaptureDispatchedMessages.cs" />
-    <Compile Include="IDispatchMessages.cs" />
+    <Compile Include="IRedispatchMessages.cs" />
     <Compile Include="IFilterDuplicateMessages.cs" />
     <Compile Include="IHandleMessagesOnce.cs" />
-    <Compile Include="IStoreDispatchedMessages.cs" />
+    <Compile Include="ILoadDispatchedMessages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DispatchedMessage.cs" />
     <Compile Include="ReturnCodeMessage.cs" />
