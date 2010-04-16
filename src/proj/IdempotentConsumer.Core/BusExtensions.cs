@@ -9,8 +9,9 @@ namespace IdempotentConsumer.Core
 	{
 		public static void Dispatch(this IBus bus, DispatchMethod method, IEnumerable<IMessage> messages)
 		{
-			if (messages.Any())
-				GetDispatcher(bus, method).Invoke(messages.ToArray());
+			var messagesToDispatch = messages.ToArray();
+			if (messagesToDispatch.Length > 0)
+				GetDispatcher(bus, method).Invoke(messagesToDispatch);
 		}
 
 		private static Action<IMessage[]> GetDispatcher(IBus bus, DispatchMethod method)
