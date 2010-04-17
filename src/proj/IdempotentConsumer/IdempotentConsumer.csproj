@@ -50,9 +50,9 @@
     <Compile Include="IHandleMessagesOnce.cs" />
     <Compile Include="ILoadDispatchedMessages.cs" />
     <Compile Include="IStoreDispatchedMessages.cs" />
+    <Compile Include="MessageAlreadyProcessedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DispatchedMessage.cs" />
-    <Compile Include="ReturnCodeMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NServiceBus, Version=2.0.0.1145, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">

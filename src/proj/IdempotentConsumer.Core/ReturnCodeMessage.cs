@@ -1,8 +1,8 @@
-namespace IdempotentConsumer
+namespace IdempotentConsumer.Core
 {
 	using NServiceBus;
 
-	public class ReturnCodeMessage : IMessage
+	internal class ReturnCodeMessage : IMessage
 	{
 		private readonly int returnCode;
 

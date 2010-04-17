@@ -4,17 +4,15 @@ namespace IdempotentConsumer.Core
 	using System.Collections.Generic;
 	using NServiceBus;
 
-	public class DispatchBus : ICaptureDispatchedMessages
+	public class DispatchBus : BusProxy, ICaptureDispatchedMessages
 	{
-		private readonly IBus bus;
 		private readonly IDispatchedMessageUnitOfWork unitOfWork;
-
 		private Guid aggregateId;
 		private Guid messageId;
 
 		public DispatchBus(IBus bus, IDispatchedMessageUnitOfWork unitOfWork)
+			: base(bus)
 		{
-			this.bus = bus;
 			this.unitOfWork = unitOfWork;
 		}
 
@@ -44,127 +42,50 @@ namespace IdempotentConsumer.Core
 				this.unitOfWork.RegisterNew(message);
 		}
 
-		public IDictionary<string, string> OutgoingHeaders
-		{
-			get { return this.bus.OutgoingHeaders; }
-		}
-		public IMessageContext CurrentMessageContext
-		{
-			get { return this.bus.CurrentMessageContext; }
-		}
-
-		public T CreateInstance<T>() where T : IMessage
-		{
-			return this.bus.CreateInstance<T>();
-		}
-		public T CreateInstance<T>(Action<T> action) where T : IMessage
-		{
-			return this.bus.CreateInstance(action);
-		}
-		public object CreateInstance(Type messageType)
-		{
-			return this.bus.CreateInstance(messageType);
-		}
-
-		public void Publish<T>(params T[] messages) where T : IMessage
+		public override void Publish<T>(params T[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Publish, messages as IMessage[]);
-			this.bus.Publish(messages);
+			this.Bus.Publish(messages);
 		}
-		public void Publish<T>(Action<T> messageConstructor) where T : IMessage
+		public override void Publish<T>(Action<T> messageConstructor)
 		{
 			this.Publish(this.CreateInstance(messageConstructor));
 		}
 
-		public void Subscribe(Type messageType)
-		{
-			this.bus.Subscribe(messageType);
-		}
-		public void Subscribe<T>() where T : IMessage
-		{
-			this.bus.Subscribe<T>();
-		}
-		public void Subscribe(Type messageType, Predicate<IMessage> condition)
-		{
-			this.bus.Subscribe(messageType, condition);
-		}
-		public void Subscribe<T>(Predicate<T> condition) where T : IMessage
-		{
-			this.bus.Subscribe(condition);
-		}
-
-		public void Unsubscribe(Type messageType)
-		{
-			this.bus.Unsubscribe(messageType);
-		}
-		public void Unsubscribe<T>() where T : IMessage
-		{
-			this.bus.Unsubscribe<T>();
-		}
-
-		public void SendLocal(params IMessage[] messages)
+		public override void SendLocal(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.SendLocal, messages);
-			this.bus.SendLocal(messages);
+			this.Bus.SendLocal(messages);
 		}
-		public void SendLocal<T>(Action<T> messageConstructor) where T : IMessage
+		public override void SendLocal<T>(Action<T> messageConstructor)
 		{
 			this.SendLocal(this.CreateInstance(messageConstructor));
 		}
 
-		public ICallback Send(params IMessage[] messages)
+		public override ICallback Send(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Send, messages);
-			return this.bus.Send(messages);
+			return this.Bus.Send(messages);
 		}
-		public ICallback Send<T>(Action<T> messageConstructor) where T : IMessage
+		public override ICallback Send<T>(Action<T> messageConstructor)
 		{
 			return this.Send(this.CreateInstance(messageConstructor));
 		}
-		public ICallback Send(string destination, params IMessage[] messages)
-		{
-			return this.bus.Send(destination, messages);
-		}
-		public ICallback Send<T>(string destination, Action<T> messageConstructor) where T : IMessage
-		{
-			return this.bus.Send(destination, messageConstructor);
-		}
-		public void Send(string destination, string correlationId, params IMessage[] messages)
-		{
-			this.bus.Send(destination, correlationId, messages);
-		}
-		public void Send<T>(string destination, string correlationId, Action<T> messageConstructor) where T : IMessage
-		{
-			this.bus.Send(destination, correlationId, messageConstructor);
-		}
 
-		public void Reply(params IMessage[] messages)
+		public override void Reply(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Reply, messages);
-			this.bus.Reply(messages);
+			this.Bus.Reply(messages);
 		}
-		public void Reply<T>(Action<T> messageConstructor) where T : IMessage
+		public override void Reply<T>(Action<T> messageConstructor)
 		{
 			this.Reply(this.CreateInstance(messageConstructor));
 		}
 
-		public void Return(int errorCode)
+		public override void Return(int errorCode)
 		{
 			this.RegisterMessages(DispatchMethod.Return, new ReturnCodeMessage(errorCode));
-			this.bus.Return(errorCode);
-		}
-
-		public void HandleCurrentMessageLater()
-		{
-			this.bus.HandleCurrentMessageLater();
-		}
-		public void ForwardCurrentMessageTo(string destination)
-		{
-			this.bus.ForwardCurrentMessageTo(destination);
-		}
-		public void DoNotContinueDispatchingCurrentMessageToHandlers()
-		{
-			this.bus.DoNotContinueDispatchingCurrentMessageToHandlers();
+			this.Bus.Return(errorCode);
 		}
 	}
 }

@@ -43,12 +43,14 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BusExtensions.cs" />
+    <Compile Include="BusProxy.cs" />
     <Compile Include="DispatchBus.cs" />
     <Compile Include="DispatchedMessageUnitOfWork.cs" />
     <Compile Include="DuplicateMessageFilter.cs" />
     <Compile Include="IdempotentMessageHandler.cs" />
     <Compile Include="MessageRedispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReturnCodeMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IdempotentConsumer\IdempotentConsumer.csproj">
