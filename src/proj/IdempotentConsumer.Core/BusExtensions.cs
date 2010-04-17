@@ -2,16 +2,14 @@ namespace IdempotentConsumer.Core
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using NServiceBus;
 
 	internal static class BusExtensions
 	{
-		public static void Dispatch(this IBus bus, DispatchMethod method, IEnumerable<IMessage> messages)
+		public static void Dispatch(this IBus bus, DispatchMethod method, IMessage[] messages)
 		{
-			var messagesToDispatch = messages.ToArray();
-			if (messagesToDispatch.Length > 0)
-				GetDispatcher(bus, method).Invoke(messagesToDispatch);
+			if (messages.Length > 0)
+				GetDispatcher(bus, method).Invoke(messages);
 		}
 
 		private static Action<IMessage[]> GetDispatcher(IBus bus, DispatchMethod method)

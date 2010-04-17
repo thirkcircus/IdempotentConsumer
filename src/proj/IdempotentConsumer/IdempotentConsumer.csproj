@@ -43,14 +43,16 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="DispatchMethod.cs" />
-    <Compile Include="ICaptureDispatchedMessages.cs" />
-    <Compile Include="IDispatchedMessageUnitOfWork.cs" />
+    <Compile Include="IBuildMessages.cs" />
+    <Compile Include="ILoadMessages.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IRegisterMessageIdentifiers.cs" />
+    <Compile Include="ITrackUnitOfWork.cs" />
     <Compile Include="IDispatchMessages.cs" />
-    <Compile Include="IFilterDuplicateMessages.cs" />
     <Compile Include="IHandleMessagesOnce.cs" />
-    <Compile Include="ILoadDispatchedMessages.cs" />
-    <Compile Include="IStoreDispatchedMessages.cs" />
-    <Compile Include="MessageAlreadyProcessedException.cs" />
+    <Compile Include="IStoreMessages.cs" />
+    <Compile Include="DuplicateMessageException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DispatchedMessage.cs" />
   </ItemGroup>

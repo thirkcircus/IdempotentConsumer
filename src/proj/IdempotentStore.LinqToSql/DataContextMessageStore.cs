@@ -6,7 +6,7 @@ namespace IdempotentStore.LinqToSql
 	using System.Linq;
 	using IdempotentConsumer;
 
-	public class DataContextMessageStore : ILoadDispatchedMessages, IStoreDispatchedMessages
+	public class DataContextMessageStore : ILoadMessages, IStoreMessages
 	{
 		private readonly Table<DispatchedMessage> table;
 
@@ -22,7 +22,7 @@ namespace IdempotentStore.LinqToSql
 			       select message;
 		}
 
-		public void Store(ICollection<DispatchedMessage> messages)
+		public void Persist(IEnumerable<DispatchedMessage> messages)
 		{
 			this.table.AttachAll(messages);
 		}

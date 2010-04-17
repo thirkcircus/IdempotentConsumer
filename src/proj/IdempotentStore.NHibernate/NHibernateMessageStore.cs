@@ -7,7 +7,7 @@ namespace IdempotentStore.NHibernate
 	using global::NHibernate.Linq;
 	using IdempotentConsumer;
 
-	public class NHibernateMessageStore : ILoadDispatchedMessages, IStoreDispatchedMessages
+	public class NHibernateMessageStore : ILoadMessages, IStoreMessages
 	{
 		private readonly ISession session;
 
@@ -23,7 +23,7 @@ namespace IdempotentStore.NHibernate
 			       select message;
 		}
 
-		public void Store(ICollection<DispatchedMessage> messages)
+		public void Persist(IEnumerable<DispatchedMessage> messages)
 		{
 			foreach (var message in messages)
 				this.session.Save(message);

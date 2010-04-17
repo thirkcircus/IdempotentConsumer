@@ -4,40 +4,40 @@ namespace IdempotentConsumer.Core
 	using System.Collections.Generic;
 	using NServiceBus;
 
-	public abstract class BusProxy : IBus
+	public abstract class ProxyBus : IBus
 	{
-		protected BusProxy(IBus bus)
+		protected ProxyBus(IBus inner)
 		{
-			this.Bus = bus;
+			this.Inner = inner;
 		}
 
-		protected IBus Bus { get; private set; }
+		protected IBus Inner { get; private set; }
 
 		public virtual IDictionary<string, string> OutgoingHeaders
 		{
-			get { return this.Bus.OutgoingHeaders; }
+			get { return this.Inner.OutgoingHeaders; }
 		}
 		public virtual IMessageContext CurrentMessageContext
 		{
-			get { return this.Bus.CurrentMessageContext; }
+			get { return this.Inner.CurrentMessageContext; }
 		}
 
 		public virtual T CreateInstance<T>() where T : IMessage
 		{
-			return this.Bus.CreateInstance<T>();
+			return this.Inner.CreateInstance<T>();
 		}
 		public virtual T CreateInstance<T>(Action<T> action) where T : IMessage
 		{
-			return this.Bus.CreateInstance(action);
+			return this.Inner.CreateInstance(action);
 		}
 		public virtual object CreateInstance(Type messageType)
 		{
-			return this.Bus.CreateInstance(messageType);
+			return this.Inner.CreateInstance(messageType);
 		}
 
 		public virtual void Publish<T>(params T[] messages) where T : IMessage
 		{
-			this.Bus.Publish(messages);
+			this.Inner.Publish(messages);
 		}
 		public virtual void Publish<T>(Action<T> messageConstructor) where T : IMessage
 		{
@@ -46,33 +46,33 @@ namespace IdempotentConsumer.Core
 
 		public virtual void Subscribe(Type messageType)
 		{
-			this.Bus.Subscribe(messageType);
+			this.Inner.Subscribe(messageType);
 		}
 		public virtual void Subscribe<T>() where T : IMessage
 		{
-			this.Bus.Subscribe<T>();
+			this.Inner.Subscribe<T>();
 		}
 		public virtual void Subscribe(Type messageType, Predicate<IMessage> condition)
 		{
-			this.Bus.Subscribe(messageType, condition);
+			this.Inner.Subscribe(messageType, condition);
 		}
 		public virtual void Subscribe<T>(Predicate<T> condition) where T : IMessage
 		{
-			this.Bus.Subscribe(condition);
+			this.Inner.Subscribe(condition);
 		}
 
 		public virtual void Unsubscribe(Type messageType)
 		{
-			this.Bus.Unsubscribe(messageType);
+			this.Inner.Unsubscribe(messageType);
 		}
 		public virtual void Unsubscribe<T>() where T : IMessage
 		{
-			this.Bus.Unsubscribe<T>();
+			this.Inner.Unsubscribe<T>();
 		}
 
 		public virtual void SendLocal(params IMessage[] messages)
 		{
-			this.Bus.SendLocal(messages);
+			this.Inner.SendLocal(messages);
 		}
 		public virtual void SendLocal<T>(Action<T> messageConstructor) where T : IMessage
 		{
@@ -81,7 +81,7 @@ namespace IdempotentConsumer.Core
 
 		public virtual ICallback Send(params IMessage[] messages)
 		{
-			return this.Bus.Send(messages);
+			return this.Inner.Send(messages);
 		}
 		public virtual ICallback Send<T>(Action<T> messageConstructor) where T : IMessage
 		{
@@ -89,24 +89,24 @@ namespace IdempotentConsumer.Core
 		}
 		public virtual ICallback Send(string destination, params IMessage[] messages)
 		{
-			return this.Bus.Send(destination, messages);
+			return this.Inner.Send(destination, messages);
 		}
 		public virtual ICallback Send<T>(string destination, Action<T> messageConstructor) where T : IMessage
 		{
-			return this.Bus.Send(destination, messageConstructor);
+			return this.Inner.Send(destination, messageConstructor);
 		}
 		public virtual void Send(string destination, string correlationId, params IMessage[] messages)
 		{
-			this.Bus.Send(destination, correlationId, messages);
+			this.Inner.Send(destination, correlationId, messages);
 		}
 		public virtual void Send<T>(string destination, string correlationId, Action<T> messageConstructor) where T : IMessage
 		{
-			this.Bus.Send(destination, correlationId, messageConstructor);
+			this.Inner.Send(destination, correlationId, messageConstructor);
 		}
 
 		public virtual void Reply(params IMessage[] messages)
 		{
-			this.Bus.Reply(messages);
+			this.Inner.Reply(messages);
 		}
 		public virtual void Reply<T>(Action<T> messageConstructor) where T : IMessage
 		{
@@ -115,20 +115,20 @@ namespace IdempotentConsumer.Core
 
 		public virtual void Return(int errorCode)
 		{
-			this.Bus.Return(errorCode);
+			this.Inner.Return(errorCode);
 		}
 
 		public virtual void HandleCurrentMessageLater()
 		{
-			this.Bus.HandleCurrentMessageLater();
+			this.Inner.HandleCurrentMessageLater();
 		}
 		public virtual void ForwardCurrentMessageTo(string destination)
 		{
-			this.Bus.ForwardCurrentMessageTo(destination);
+			this.Inner.ForwardCurrentMessageTo(destination);
 		}
 		public virtual void DoNotContinueDispatchingCurrentMessageToHandlers()
 		{
-			this.Bus.DoNotContinueDispatchingCurrentMessageToHandlers();
+			this.Inner.DoNotContinueDispatchingCurrentMessageToHandlers();
 		}
 	}
 }

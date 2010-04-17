@@ -7,7 +7,6 @@ namespace IdempotentConsumer.Core
 	public class MessageDispatcher : IDispatchMessages
 	{
 		private readonly IBus bus;
-		private readonly HashSet<int> alreadyDispatched = new HashSet<int>();
 
 		public MessageDispatcher(IBus bus)
 		{
@@ -16,19 +15,11 @@ namespace IdempotentConsumer.Core
 
 		public void Dispatch(IEnumerable<DispatchedMessage> messages)
 		{
-			foreach (var groupedByDispatchMethod in messages.GroupBy(x => x.GroupIndex))
+			foreach (var group in messages.GroupBy(x => x.GroupIndex))
 			{
-				var method = groupedByDispatchMethod.First().Method;
-				this.bus.Dispatch(method, this.GetUndispatchedMessages(groupedByDispatchMethod));
+				var method = group.First().Method;
+				this.bus.Dispatch(method, group.Select(x => x.Body).ToArray());
 			}
-		}
-		private IEnumerable<IMessage> GetUndispatchedMessages(IEnumerable<DispatchedMessage> messages)
-		{
-			return messages.Where(x => this.MessageNeverDispatched(x)).Select(x => x.Body);
-		}
-		private bool MessageNeverDispatched(DispatchedMessage message)
-		{
-			return this.alreadyDispatched.Add(message.MessageIndex);
 		}
 	}
 }
