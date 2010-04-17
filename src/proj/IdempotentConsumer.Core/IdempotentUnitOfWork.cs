@@ -24,7 +24,18 @@ namespace IdempotentConsumer.Core
 		}
 		public void Complete()
 		{
-			this.storage.Persist(this.tracked);
+			try
+			{
+				this.storage.Persist(this.tracked);
+			}
+			catch (DuplicateMessageException e)
+			{
+				this.tracked.Clear();
+
+				foreach (var message in e.CommittedMessages)
+					this.tracked.Add(message);
+			}
+
 			this.dispatcher.Dispatch(this.tracked);
 			this.tracked.Clear();
 		}
