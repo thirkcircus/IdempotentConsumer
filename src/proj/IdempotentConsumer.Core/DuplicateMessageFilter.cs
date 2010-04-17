@@ -6,9 +6,9 @@ namespace IdempotentConsumer.Core
 	public class DuplicateMessageFilter : IFilterDuplicateMessages
 	{
 		private readonly ILoadDispatchedMessages messageLoad;
-		private readonly IRedispatchMessages dispatcher;
+		private readonly IDispatchMessages dispatcher;
 
-		public DuplicateMessageFilter(ILoadDispatchedMessages repository, IRedispatchMessages dispatcher)
+		public DuplicateMessageFilter(ILoadDispatchedMessages repository, IDispatchMessages dispatcher)
 		{
 			this.messageLoad = repository;
 			this.dispatcher = dispatcher;
@@ -18,7 +18,7 @@ namespace IdempotentConsumer.Core
 		{
 			var previouslyDispatched = this.messageLoad.Load(aggregateId, messageId);
 			if (previouslyDispatched.Any())
-				this.dispatcher.Redispatch(previouslyDispatched);
+				this.dispatcher.Dispatch(previouslyDispatched);
 			else
 				handleMessage();
 		}

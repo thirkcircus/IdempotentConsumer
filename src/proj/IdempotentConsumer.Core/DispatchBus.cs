@@ -45,7 +45,6 @@ namespace IdempotentConsumer.Core
 		public override void Publish<T>(params T[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Publish, messages as IMessage[]);
-			this.Bus.Publish(messages);
 		}
 		public override void Publish<T>(Action<T> messageConstructor)
 		{
@@ -55,7 +54,6 @@ namespace IdempotentConsumer.Core
 		public override void SendLocal(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.SendLocal, messages);
-			this.Bus.SendLocal(messages);
 		}
 		public override void SendLocal<T>(Action<T> messageConstructor)
 		{
@@ -65,7 +63,7 @@ namespace IdempotentConsumer.Core
 		public override ICallback Send(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Send, messages);
-			return this.Bus.Send(messages);
+			return null;
 		}
 		public override ICallback Send<T>(Action<T> messageConstructor)
 		{
@@ -75,7 +73,6 @@ namespace IdempotentConsumer.Core
 		public override void Reply(params IMessage[] messages)
 		{
 			this.RegisterMessages(DispatchMethod.Reply, messages);
-			this.Bus.Reply(messages);
 		}
 		public override void Reply<T>(Action<T> messageConstructor)
 		{
@@ -85,7 +82,6 @@ namespace IdempotentConsumer.Core
 		public override void Return(int errorCode)
 		{
 			this.RegisterMessages(DispatchMethod.Return, new ReturnCodeMessage(errorCode));
-			this.Bus.Return(errorCode);
 		}
 	}
 }

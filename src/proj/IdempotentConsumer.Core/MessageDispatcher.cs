@@ -4,17 +4,17 @@ namespace IdempotentConsumer.Core
 	using System.Linq;
 	using NServiceBus;
 
-	public class MessageRedispatcher : IRedispatchMessages
+	public class MessageDispatcher : IDispatchMessages
 	{
 		private readonly IBus bus;
 		private readonly HashSet<int> alreadyDispatched = new HashSet<int>();
 
-		public MessageRedispatcher(IBus bus)
+		public MessageDispatcher(IBus bus)
 		{
 			this.bus = bus;
 		}
 
-		public void Redispatch(IEnumerable<DispatchedMessage> messages)
+		public void Dispatch(IEnumerable<DispatchedMessage> messages)
 		{
 			foreach (var groupedByDispatchMethod in messages.GroupBy(x => x.GroupIndex))
 			{
