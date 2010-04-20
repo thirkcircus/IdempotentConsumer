@@ -24,6 +24,9 @@ namespace IdempotentConsumer.Core
 		}
 		public void Complete()
 		{
+			if (this.tracked.Count == 0)
+				return;
+
 			try
 			{
 				this.storage.Persist(this.tracked);
