@@ -43,10 +43,12 @@
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BusExtensions.cs" />
+    <Compile Include="DuplicateMessageFilter.cs" />
     <Compile Include="IdempotentBus.cs" />
-    <Compile Include="IdempotentMessageHandler.cs" />
+    <Compile Include="ReactiveMessageHandler.cs" />
     <Compile Include="MessageBuilder.cs" />
     <Compile Include="IdempotentUnitOfWork.cs" />
+    <Compile Include="ProactiveMessageHandler.cs" />
     <Compile Include="ProxyBus.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

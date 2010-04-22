@@ -3,7 +3,7 @@ namespace IdempotentConsumer.Core
 	using System;
 	using NServiceBus;
 
-	public class IdempotentBus : ProxyBus
+	public class IdempotentBus : ProxyBus, IIdempotentBus
 	{
 		private readonly ITrackUnitOfWork unitOfWork;
 

@@ -44,6 +44,8 @@
     </Compile>
     <Compile Include="DispatchMethod.cs" />
     <Compile Include="IBuildMessages.cs" />
+    <Compile Include="IFilterDuplicateMessages.cs" />
+    <Compile Include="IIdempotentBus.cs" />
     <Compile Include="ILoadMessages.cs">
       <SubType>Code</SubType>
     </Compile>
