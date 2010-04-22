@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0858F05A-5586-46C6-9F03-8D13F6AA5043}</ProjectGuid>
+    <ProjectGuid>{E940BEE9-E242-46CE-ACD6-09546AEC4DD4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IdempotentConsumer.Core</RootNamespace>
-    <AssemblyName>IdempotentConsumer.Core</AssemblyName>
+    <RootNamespace>IdempotentConsumer.Autofac</RootNamespace>
+    <AssemblyName>IdempotentConsumer.Autofac</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -42,33 +42,27 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BusExtensions.cs" />
-    <Compile Include="DuplicateMessageFilter.cs" />
-    <Compile Include="IdempotentBus.cs" />
-    <Compile Include="InMemoryStorage.cs" />
-    <Compile Include="ReactiveMessageHandler.cs" />
-    <Compile Include="MessageBuilder.cs" />
-    <Compile Include="IdempotentUnitOfWork.cs" />
-    <Compile Include="ProactiveMessageHandler.cs" />
-    <Compile Include="ProxyBus.cs" />
-    <Compile Include="MessageDispatcher.cs" />
+    <Compile Include="IdempotentConfigurationModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnCodeMessage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IdempotentConsumer.Core\IdempotentConsumer.Core.csproj">
+      <Project>{0858F05A-5586-46C6-9F03-8D13F6AA5043}</Project>
+      <Name>IdempotentConsumer.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IdempotentConsumer\IdempotentConsumer.csproj">
       <Project>{E778AFA7-B60A-4CF4-B9CD-541F2BBBE690}</Project>
       <Name>IdempotentConsumer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=1.4.4.561, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\Autofac-bin\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="NServiceBus, Version=2.0.0.1145, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\NServiceBus-bin\NServiceBus.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
