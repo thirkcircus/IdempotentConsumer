@@ -42,6 +42,7 @@
     <Compile Include="..\VersionAssemblyInfo.cs">
       <Link>Properties\VersionAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ConsistencyProtectionException.cs" />
     <Compile Include="DispatchMethod.cs" />
     <Compile Include="IBuildMessages.cs" />
     <Compile Include="IFilterDuplicateMessages.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="ILoadMessages.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IProtectConsistency.cs" />
     <Compile Include="IRegisterMessageIdentifiers.cs" />
     <Compile Include="ITrackUnitOfWork.cs" />
     <Compile Include="IDispatchMessages.cs" />
